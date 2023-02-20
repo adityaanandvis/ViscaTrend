@@ -1,8 +1,8 @@
+streamlit==0.77.0
 pandas==1.4.4
 pystan==2.19.1.1
 holidays==0.19
-prophet==1.1.2
 plotly==5.9.0
+prophet==1.1.2
 altair==4.2.2
-streamlit==0.77.0
 numpy==1.21.5
