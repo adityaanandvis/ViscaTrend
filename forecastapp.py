@@ -1,5 +1,4 @@
 import streamlit as st
-# from streamlit import caching
 import pandas as pd
 import numpy as np
 
@@ -242,7 +241,6 @@ if page == "Application":
             if st.checkbox("Initialize model (Fit)",key="fit"):
                 if len(growth_settings)==2:
                     m = Prophet(seasonality_mode=seasonality,
-                                # daily_seasonality=daily,
                                 growth=growth,
                                 changepoint_prior_scale=changepoint_scale,
                                 seasonality_prior_scale= seasonality_scale)
@@ -271,14 +269,6 @@ if page == "Application":
 
                         forecast = m.predict(future)
                         st.success('Prediction generated successfully')
-                        # forecast_df=pd.DataFrame(forecast)
-                        # forecast_df.dropna()
-                        # print(type(forecast))
-                        # print(forecast.isnull().sum())
-                        # st.write(forecast)
-                        # st.table(forecast)
-                        # st.write_html(forecast_df)
-                        # st.dataframe(forecast)
                         # st.success("Dataframe error")
                         fig1 = m.plot(forecast)
                         st.write(fig1)
@@ -320,7 +310,6 @@ if page == "Application":
             horizon = str(horizon) + " Months"
 
             st.write(f"Here we do cross-validation to assess prediction performance on a horizon of **{horizon}**, starting with **{initial}** of training data in the first cutoff and then making predictions every **{period}**.")
-            # st.markdown("""For more information read the [documentation](https://facebook.github.io/prophet/docs/diagnostics.html#parallelizing-cross-validation)""")
         
             
         with st.beta_expander("Metrics"):
@@ -350,9 +339,7 @@ if page == "Application":
                             st.write("Mse: mean absolute error")
                             st.write("Mae: Mean average error")
                             st.write("Mape: Mean average percentage error")
-                            # st.write("Mse: mean absolute error")
-                            # st.write("Mdape: Median average percentage error")
-
+                            
                             if metrics == 1:
 
                                 metrics = ['Choose a metric','mse','mae','mape']
@@ -364,64 +351,7 @@ if page == "Application":
             else:
                 st.write("Create a forecast to see metrics")
 
-        # st.subheader('5. Hyperparameter Tuning ')
-        # st.write("In this section it is possible to find the best combination of hyperparamenters.")
-        # # st.markdown("""For more informations visit the [documentation](https://facebook.github.io/prophet/docs/diagnostics.html#hyperparameter-tuning)""")
-
-        # param_grid = {  
-        #                     'changepoint_prior_scale': [0.01, 0.1, 0.5, 1.0],
-        #                     'seasonality_prior_scale': [0.1, 1.0, 5.0, 10.0],
-        #                 }
-
-        # # Generate all combinations of parameters
-        # all_params = [dict(zip(param_grid.keys(), v)) for v in itertools.product(*param_grid.values())]
-        # rmses = []  # Store the RMSEs for each params here
-
-        # if input:
-        #     if output == 1:
-
-        #         if st.button("Optimize hyperparameters"):
-                    
-        #             with st.spinner("Finding best combination. Please wait.."):
-
-                        
-        #                 try:
-        #                 # Use cross validation to evaluate all parameters
-        #                     for params in all_params:
-        #                         m = Prophet(**params).fit(df)  # Fit model with given params
-        #                         df_cv = cross_validation(m, initial=initial,
-        #                                                         period=period,
-        #                                                         horizon=horizon,
-        #                                                         parallel="processes")
-        #                         df_p = performance_metrics(df_cv, rolling_window=1)
-        #                         rmses.append(df_p['rmse'].values[0])
-        #                 except:
-        #                     for params in all_params:
-        #                         m = Prophet(**params).fit(df)  # Fit model with given params
-        #                         df_cv = cross_validation(m, initial=initial,
-        #                                                         period=period,
-        #                                                         horizon=horizon,
-        #                                                         parallel="threads")
-        #                         df_p = performance_metrics(df_cv, rolling_window=1)
-        #                         rmses.append(df_p['rmse'].values[0])
-
-        #             # Find the best parameters
-        #             tuning_results = pd.DataFrame(all_params)
-        #             tuning_results['rmse'] = rmses
-        #             st.write(tuning_results)
-                            
-        #             best_params = all_params[np.argmin(rmses)]
-                    
-        #             st.write('The best parameter combination is:')
-        #             st.write(best_params)
-        #             #st.write(f"Changepoint prior scale:  {best_params[0]} ")
-        #             #st.write(f"Seasonality prior scale: {best_params[1]}  ")
-        #             st.write(" You may repeat the process using these parameters in the configuration section 2")
-                    
-
-        #     else:
-        #         st.write("Create a model to optimize")    
-
+        
         st.subheader('5. Export results ')
         
         st.write("Finally you can export your forecast result into an excel file.")
@@ -435,10 +365,7 @@ if page == "Application":
                     if st.button('Export forecast (.csv)'):
                         with st.spinner("Exporting.."):
 
-                            #export_forecast = pd.DataFrame(forecast[['ds','yhat_lower','yhat','yhat_upper']]).to_csv()
                             export_forecast = pd.DataFrame(forecast[['ds','yhat_lower','yhat','yhat_upper']])
-                            # st.write(export_forecast.head())
-                            # export_forecast= export_forecast.to_excel('sample.xlsx',index=False)
                             export_forecast= export_forecast.to_csv(decimal='.')
                             b64 = base64.b64encode(export_forecast.encode()).decode()
                             href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (click to download csv file **forecast.csv**)'
@@ -455,17 +382,7 @@ if page == "Application":
                         except:
                             st.write("No metrics to export")
 
-                # with col3:
-                #     if st.button('Save model configuration (.json) in memory'):
-                #         with open('serialized_model.json', 'w') as fout:
-                #             json.dump(model_to_json(m), fout)
-                            
-                    
-
-                # with col4:
-                #     if st.button('Clear cache memory please'):
-                #         caching.clear_cache()
-
+               
             else:
                 st.write("Generate a forecast to download.")
 
